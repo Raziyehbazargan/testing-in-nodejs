@@ -23,7 +23,7 @@ widgetRouter.route('/widgets/:widgetId')
     db(con => con.get(parseInt(req.params.widgetId)).then(widgets => res.json(widgets)));
   })
   .put(function(req, res) {
-    req.body.id = req.params.id;
+    req.body.id = parseInt(req.params.widgetId);
     db(con => con.update(req.body).then(widget => res.json(widget)));
   })
   .delete(function(req, res) {
