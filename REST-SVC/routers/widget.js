@@ -14,13 +14,18 @@ widgetRouter.route('/widgets')
     //   { name: 'widget 3', color: 'orange', size: 'small', quantity: 15},
     // ]);
   })
-  .post();
+  .post(function(req, res) {
+    db(con => con.insert(req.body).then(widget => res.json(widget)));
+  });
 
 widgetRouter.route('/widgets/:widgetId')
   .get(function(req, res) {
     db(con => con.get(parseInt(req.params.widgetId)).then(widgets => res.json(widgets)));
   })
-  .put()
+  .put(function(req, res) {
+    req.body.id = req.params.id;
+    db(con => con.update(req.body).then(widget => res.json(widget)));
+  })
   .delete(function(req, res) {
     db(con => con.delete(parseInt(req.params.widgetId)).then(widgets => res.json(widgets)));
   });
