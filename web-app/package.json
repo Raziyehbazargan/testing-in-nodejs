@@ -11,5 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.14.0"
+  },
+  "webServer": {
+    "folder": "www",
+    "port": 3000
   }
 }
