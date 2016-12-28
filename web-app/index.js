@@ -11,6 +11,18 @@ const app = express();
 
 const server = http.createServer(app);
 
+app.get('/demo', function(req, res, next) {
+  console.log('handled demo request1');
+  req.body = 'demo test';
+  next();
+});
+
+app.get('/demo', function(req, res) {
+  console.log('handled demo request2');
+  res.json({ msg: req.body });
+});
+
+
 //serve the static files - default file is index.html but we can add options and change defaults
 app.use(express.static(options.webServer.folder, {
   index : 'index2.html',
