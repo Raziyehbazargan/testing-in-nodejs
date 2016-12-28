@@ -1,5 +1,5 @@
 const http = require('http');
-const expressn = require('express');
+const express = require('express');
 
 //invoke express - because express is a function object
 const app = express();
