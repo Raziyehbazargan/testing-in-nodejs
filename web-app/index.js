@@ -5,11 +5,24 @@ const options = JSON.parse(fs.readFileSync('package.json'));
 
 const http = require('http');
 const express = require('express');
+const bodyParser = require('body-parser');
 
 //invoke express - because express is a function object
 const app = express();
 
 const server = http.createServer(app);
+
+app.use('/demo/:id', function(req, res) {
+  res.send('params:' + JSON.stringify(req.params) +
+          '<b>query: ' + JSON.stringify(req.query));
+});
+
+app.use('/contact', bodyParser.urlencoded({ extended: true }));
+app.use('/contact', bodyParser.json());
+
+app.use('/contact', function(req, res) {
+  res.send('POST Data: ', JSON.stringify(req.body));
+});
 
 app.get('/demo', function(req, res, next) {
   console.log('handled demo request1');
