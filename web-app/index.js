@@ -5,12 +5,32 @@ const options = JSON.parse(fs.readFileSync('package.json'));
 
 const http = require('http');
 const express = require('express');
-
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 //invoke express - because express is a function object
 const app = express();
 
 const server = http.createServer(app);
 
+app.use(cookieParser());
+
+app.use('/demo/:id', function(req, res) {
+  res.send('params:' + JSON.stringify(req.params) +
+          '<b>query: ' + JSON.stringify(req.query));
+});
+
+app.use('/contact', bodyParser.urlencoded({ extended: true }));
+app.use('/contact', bodyParser.json());
+
+app.use('/contact', function(req, res) {
+  res.send('POST Data: ', JSON.stringify(req.body));
+});
+
+app.use(function(req, res, next) {
+  console.log(req.cookies);
+  res.cookie('demo', 'test');
+  next();
+})
 app.get('/demo', function(req, res, next) {
   console.log('handled demo request1');
   req.body = 'demo test';

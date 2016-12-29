@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<html>
+
+	<head>
+		<title>Demo Express Web Application</title>
+		<style>
+			body {
+				font-family: arial;
+				font-size: 100%;
+				margin:10px;
+			}
+			form > label { display:block; margin:5px; }
+			form > select { margin-left:10px; }
+			.alert {
+				background-color:lightblue;
+				border-radius:5px;
+				padding: 10px;
+				color:block;
+				font-weight:bold;
+				font-size:0.8rem;
+				margin-bottom:10px;
+				opacity:0;
+				transition: opacity 2s;
+			}
+			.alert.alert-display {
+				opacity:1;
+				transition: opacity 0s;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div class='alert'>Form Submission Successful!</div>
+
+		<form name="contact-form">
+
+			<label>
+				Name: <input type="text" value="Bob" name="contact-name">
+			</label>
+
+			<label>
+				Age: <input type="number" value="45" name="contact-age">
+			</label>
+
+			<label>
+				Phone: <input type="tel" value="111-222-3333" name="contact-phone">
+			</label>
+
+			<label>
+				Email: <input type="email" value="bob@somedomain.bob" name="contact-email">
+			</label>
+
+			<button type="button">Send</button>
+
+			<select name='post-method'>
+				<option value='url-encoded-post'>POST URL Encoded Data</option>
+				<option value='json-post'>POST JSON Data</option>
+			</select>
+
+		</form>
+
+		<script>
+
+			'use strict';
+
+			var clearForm = function() {
+				document.querySelector('[name=contact-form]').reset();
+			};
+
+			document.querySelector('button').addEventListener('click', function() {
+
+				var xhr = new XMLHttpRequest();
+
+				xhr.addEventListener('readystatechange', function() {
+
+					if (xhr.readyState === 4 && xhr.status === 200) {
+
+						//clearForm();
+
+						document.querySelector('.alert').classList.add('alert-display');
+						setTimeout(function() {
+							document.querySelector('.alert').classList.remove('alert-display');
+						}, 1000);
+
+					}
+				});
+
+				xhr.open('POST', 'contact');
+
+				var postMethod = document.querySelector('[name=post-method]').value;
+
+				switch (postMethod) {
+					case 'url-encoded-post':
+
+						var contactForm = document.querySelector('[name=contact-form]');
+
+						var fd = new FormData(contactForm);
+
+						var urlEncodedFormData = Array.from(fd.keys())
+							.map(key => `${encodeURIComponent(key)}=${encodeURIComponent(fd.get(key))}`)
+							.join('&').replace(/%20/g, '+');
+
+  					xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+						xhr.send(urlEncodedFormData);
+
+						break;
+
+					case 'json-post':
+
+						var contactData = {
+							'contact-name': document.querySelector('[name=contact-name]').value,
+							'contact-age': document.querySelector('[name=contact-age]').value,
+							'contact-phone': document.querySelector('[name=contact-phone]').value,
+							'contact-email': document.querySelector('[name=contact-email]').value
+						};
+
+						var jsonFormData = JSON.stringify(contactData);
+
+						xhr.setRequestHeader('Content-Type', 'application/json');
+						xhr.send(jsonFormData);
+
+						break;
+				}
+
+			});
+
+		</script>
+
+	</body>
+
+</html>
